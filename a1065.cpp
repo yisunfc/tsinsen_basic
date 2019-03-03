@@ -34,8 +34,7 @@ struct Speed
 
 double simulate(Speed& speed, const Tracks& tracks, double T)
 {
-	double ret = 0, time = 0, coeff = 1;
-	double next_T = T;
+	double time = 0, coeff = 1, next_T = T;
 	for (auto const &track : tracks.data)
 	{
 		int type = track.first;
@@ -43,18 +42,18 @@ double simulate(Speed& speed, const Tracks& tracks, double T)
 		while (left_dis > 0)
 		{
 			double cur_speed = speed.data[type] * coeff;
-			double need = left_dis / cur_speed;
+			double need_time = left_dis / cur_speed;
 			double left = next_T - time;
-			if (need < left)
+			if (need_time < left)
 			{
-				time += need;
+				time += need_time;
 				left_dis = 0;
 			}
-			else if (need >= left)
+			else
 			{
 				left_dis -= left * cur_speed;
 				time += left;
-				coeff = (coeff <= 0.1 ? 0.1 : coeff - 0.1);
+				coeff = (coeff > 0.2 ? coeff - 0.1 : 0.1);
 				next_T += T;
 			}
 		}
@@ -80,6 +79,5 @@ int main()
 	if (time1 == time2) cout << "D" << endl << time1 << endl;
 	else if (time1 < time2) cout << "T" << endl << time1 << endl;
 	else cout << "R" << endl << time2 << endl;
-
 	return 0;
 }
